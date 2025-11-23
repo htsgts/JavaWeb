@@ -1,0 +1,37 @@
+Day8
+
+1. getList에 따른 리스트 화면 구현
+    - 대량의 데이터(List)를 html에 전달했을 때
+      thymeleaf가 반복문을 실행하는 방법 => th:each
+      (like Java의 enhanced for 문과 유사)
+    - 글쓰기 버튼 2개를 생성하고 /board/register 호출하도록 구현
+
+2. register 완료 후 list로 이동
+    - 단순한 페이지 이동만으로는 데이터 조회가 불가능
+    - RedirectView를 통해 데이터를 포함하여 전달 가능
+      RedirectAttribute를 이용하여 추가 데이터 전달도 가능
+      => msg를 생성하여 전달(*번 글이 등록되었습니다.)
+    - javascript에서 thymeleaf 데이터를 이용하기 위해
+      대체 부분([[ ~ ]])을 활용하여 작성함
+      => <script th:inline="javascript">로 선언
+
+3. read 구현
+    - /board/read?bno=숫자 입력시 구동
+    - BoardController에 read() 구현
+    - read.html에 데이터가 나타나도록 구현
+
+4. remove 구현
+    - /board/remove?bno=숫자 입력시 구동
+    - BoardController에 remove() 구현
+    - read.html에 remove 버튼 추가
+    - remove() 종료 후 list가 나오도록 구현
+
+5. 글 링크 추가하기
+    - list.html에서 각 글마다 링크 추가하기
+    - <a> 태그와 th:href="@{/board/read(bno=*{bno})}"
+
+6. 글 조회 후 리스트로 돌아가기 추가
+
+7. 글 수정 기능 구현
+    - modify(GET, POST) 구현
+
