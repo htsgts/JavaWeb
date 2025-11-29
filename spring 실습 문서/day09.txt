@@ -1,0 +1,21 @@
+Day9
+
+1. 게시판 검색 기능 구현
+    - getListWithKey 구현
+    - MyBatis XML 문법 사용
+        sql, if, trim, choose, when
+        기타 여러 문법들이 존재함 => 공부할 것
+
+2. 게시글에 파일 첨부하기
+    1) application.properties에 multipart 세팅
+    2) pom.xml에 dependency gson 추가
+    3) uploadForm.html 작성
+    4) UploadController를 작성하고
+       uploadForm(), uploadFormPost() 추가
+    5) uploadAjax.html
+        - jQuery를 사용하여 ajax() 활용법 연습
+    6) UploadController에
+       uploadAjax(), uploadAjaxPost() 추가
+    7) File Upload Test
+        - 파일이 C:/upload/에 저장되는지 확인
+           
