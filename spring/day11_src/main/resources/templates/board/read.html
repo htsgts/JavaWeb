@@ -8,6 +8,11 @@
 <body>
 	<h1 class="text-center">[[${vo.bno}]] : [[${vo.title}]]</h1>
 	<div class="col-md-6 text-center" style="margin: 10px auto;">
+		<div class="bigPictureWrapper">
+			<div class="bigPicture"></div>
+		</div>
+		<br>
+	
 		<table class="table table-striped">
 			<tr><td width="10%">제목</td><td th:text="${vo.title}">LoL</td></tr>
 			<tr><td>내용</td><td th:text="${vo.content}">LoL</td></tr>
@@ -15,6 +20,9 @@
 			<tr><td>등록</td><td th:text="${vo.regdate}">LoL</td></tr>
 			<tr><td>수정</td><td th:text="${vo.updatedate}">LoL</td></tr>
 		</table>
+		<div class="uploadResult">
+			<ul></ul>
+		</div>
 		
 		<form action="/board/remove" method="post">
 			<input type="hidden" name="bno" th:field="${vo.bno}">
@@ -24,6 +32,7 @@
 		</form>
 	</div>
 </body>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <script th:inline="javascript">
 	var toList = document.getElementById("toList");
 	var modi = document.getElementById("modify");
@@ -35,5 +44,21 @@
 	modi.addEventListener("click", function(){
 		location.href = "/board/modify?bno=" + [[${vo.bno}]];
 	});
+	
+	function showImage(filePath){
+		$(".bigPictureWrapper").css("display", "flex").show();
+		$(".bigPicture").html("<img src='/upload/display?fileName="
+								+ encodeURIComponent(filePath) + "'>")
+					    .animate({width: "100%", height: "100%"}, 1000);
+	}
+	
+	$(".bigPictureWrapper").on("click", function(){
+		$(".bigPictureWrapper").hide();
+	});
+	
+	$(document).ready(function(){
+		
+	});
+	
 </script>
 </html>
