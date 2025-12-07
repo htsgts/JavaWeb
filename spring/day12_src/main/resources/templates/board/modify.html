@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>글읽기</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+	<h1 class="text-center">[[${vo.bno}]] : [[${vo.title}]]</h1>
+	<form action="/board/modify" method="post">
+	<div class="col-md-6 text-center" style="margin: 10px auto;">
+		<table class="table table-striped">
+			<input type="hidden" name="bno" th:field="${vo.bno}">
+			<tr><td width="10%">제목</td><td><input name="title" th:field="${vo.title}"></td></tr>
+			<tr><td>내용</td><td><input name="content" th:field="${vo.content}"></td></tr>
+			<tr><td>저자</td><td><input name="writer" th:field="${vo.writer}"></td></tr>
+			<tr><td>등록</td><td th:text="${vo.regdate}">LoL</td></tr>
+			<tr><td>수정</td><td th:text="${vo.updatedate}">LoL</td></tr>
+		</table>
+		<button class="btn btn-danger">수정완료</button>		
+	</div>
+	</form>
+</body>
+</html>

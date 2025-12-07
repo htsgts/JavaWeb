@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>글을 마음대로 작성하시면 되겠습니까 안되겠습니까</h1>
+	<hr>
+	<!-- title, content, writer를 입력받아 -->
+	<!-- /board/register를 post로 전송하는 부분 만들기 -->
+	<form action="/board/register" method="post" id="registForm">
+		<table>
+			<tr><td>title</td><td><input type="text" name="title"></td></tr>
+			<tr><td>content</td><td><input type="text" name="content"></td></tr>
+			<tr><td>writer</td><td><input type="text" name="writer"></td></tr>
+		</table>
+		
+		<div class="uploadDiv">
+			<input type="file" name="uploadFile" multiple>
+		</div>
+		
+		<div class="uploadResult">
+			<ul></ul>
+		</div>
+		
+		<div class="bigPictureWrapper">
+			<div class="bigPicture"></div>
+		</div>
+		
+		<button id="complete">Complete</button>
+	</form>
+</body>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script>
+	let checkRule = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
+	let maxSize = 5242880;  // 5MB
+	
+	let uploadResult = $(".uploadResult ul");
+	
+	function showUploadFile(arr){
+		let str = "";
+		$(arr).each(function(i, obj){
+			if(!obj.image){  // 이미지가 아니면
+				str += "<li data-path='" + obj.uploadPath   + "' ";
+			    str += "    data-uuid='" + obj.uuid         + "' ";
+			    str += "    data-filename='" + obj.fileName + "' ";
+			    str += "    data-type='" + obj.image        + "' ";
+				str += ">";
+				str += "<img src='/img/attach.png' width='16px'> " + obj.fileName;
+				str += "</li>";
+			}
+			else { // 이미지이면
+				let filePath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName); 
+				
+				str += "<li data-path='" + obj.uploadPath   + "' ";
+			    str += "    data-uuid='" + obj.uuid         + "' ";
+			    str += "    data-filename='" + obj.fileName + "' ";
+			    str += "    data-type='" + obj.image        + "' ";
+				str += ">";
+				str += "<a href=\"javascript:showImage(\'" + obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName + "\')\">";
+				str += "<img src='/upload/display?fileName=" + filePath + "' width='16px'></a> " + obj.fileName;
+				str += "</li>";
+			}
+		});
+		console.log(str);
+		uploadResult.append(str);
+	}
+	
+	function showImage(filePath){
+		$(".bigPictureWrapper").css("display", "flex").show();
+		$(".bigPicture").html("<img src='/upload/display?fileName="
+								+ encodeURIComponent(filePath) + "'>")
+					    .animate({width: "100%", height: "100%"}, 1000);
+	}
+	
+	// 파일 검사 함수 : true - 허용, false - 불허
+	function checkFile(fileName, fileSize){
+		if(checkRule.test(fileName)){
+			alert("그런 파일 올리시면 안됩니다.");
+			return false;
+		}
+		
+		if(fileSize >= maxSize){
+			alert("여기가 구글드라이브냐");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	//$("#uploadBtn").on("click", function(e){
+	$("input[type='file']").change(function(e){
+		// alert("버튼 클릭 확인 완료");
+		
+		let formData = new FormData();
+		let inputFile = $("input[name='uploadFile']");
+		let files = inputFile[0].files;
+		
+		// formData에 files 추가하기
+		for(let i=0; i<files.length; i++){
+			if(!checkFile(files[i].name, files[i].size)){
+				return;
+			}
+			formData.append("uploadFile", files[i]);
+		}
+		
+		$.ajax({
+			url: "/upload/uploadAjaxPost",
+			processData: false,
+			contentType: false,
+			data: formData,
+			type: "POST",
+			success: function(result){
+				alert("파일 업로드 완료!!");
+				console.log(result);
+				showUploadFile(result);
+			}
+		});
+		
+		$.ajax({
+			url: "/upload/test?user=admi",
+			processData: false,
+			contentType: false,
+			data: formData,
+			type: "GET",
+			success: function(result){
+				alert("결과가 돌아왔습니다.");
+				console.log(result);
+			}
+		});
+	});
+	
+	$("button#complete").on("click", function(e){
+		e.preventDefault();  // 기본 동작을 막는다.
+		//alert("제출할 줄 알았냐?");
+		
+		let form = $("#registForm");
+		let str = "";
+		
+		$(".uploadResult ul li").each(function(i, obj){
+			// $(obj).data("filename") => obj의 속성 중 data-filename을 가져온다.
+			let filename = $(obj).data("filename");
+			let uuid = $(obj).data("uuid");
+			let uploadpath = $(obj).data("path");
+			let image = $(obj).data("type"); 
+		
+			str += "<input type='hidden' name='attachFile[" + i + "].fileName'";
+			str += " value='" + filename + "'>";
+			str += "<input type='hidden' name='attachFile[" + i + "].uuid'";
+			str += " value='" + uuid + "'>";
+			str += "<input type='hidden' name='attachFile[" + i + "].uploadPath'";
+			str += " value='" + uploadpath + "'>";
+			str += "<input type='hidden' name='attachFile[" + i + "].image'";
+			str += " value='" + image + "'>";
+		});
+		
+		console.log(str);
+		form.append(str);
+		form.submit();
+	});
+	
+</script>
+</html>
