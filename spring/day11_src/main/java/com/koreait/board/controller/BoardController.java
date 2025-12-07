@@ -1,15 +1,20 @@
 package com.koreait.board.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.koreait.board.bean.dao.AttachFileDAO;
 import com.koreait.board.bean.dao.BoardDAO;
+import com.koreait.board.bean.vo.AttachFileVO;
 import com.koreait.board.bean.vo.BoardVO;
 import com.koreait.board.util.MyUtil;
 
@@ -22,6 +27,9 @@ public class BoardController {
 	
 	@Autowired
 	private BoardDAO dao;
+	
+	@Autowired
+	private AttachFileDAO fdao;
 	
 	@GetMapping("register")
 	public void registForm() {
@@ -39,6 +47,14 @@ public class BoardController {
 		}
 		else {
 			log.info("너 지금 뭐 보낸거냐");
+		}
+		
+		// 첨부파일이 있으면 DB 저장
+		if(board.getAttachFile() != null) {
+			board.getAttachFile().forEach(attach -> {
+				attach.setBno(board.getBno());
+				fdao.insert(attach);
+			});
 		}
 		
 		rttr.addFlashAttribute("msg", board.getBno() + "번 글 등록이 완료되었습니다.");
@@ -96,5 +112,13 @@ public class BoardController {
 			rttr.addFlashAttribute("msg", "수정 대실패");
 		
 		return new RedirectView("list");
+	}
+	
+	// localhost:10000/board/getAttachList
+	// 결과를 JSON으로 전달
+	@GetMapping("getAttachList")
+	@ResponseBody
+	public List<AttachFileVO> getAttachList(Long bno){
+		return fdao.findByBno(bno);
 	}
 }
