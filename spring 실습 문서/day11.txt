@@ -11,4 +11,5 @@ Day11
 2. 첨부파일 테이블 생성
    1) 테이블 생성
    2) Mapper.java, Mapper.xml 생성
+
    3) AttachFileDAO 생성
