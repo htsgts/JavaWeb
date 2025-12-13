@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>글읽기</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<style>
+	body {
+		margin: 30px auto;
+	}
+	
+	.uploadResult ul li {
+		list-style: none;
+	}
+	
+	.bigPictureWrapper img {
+		width: 100%;
+	}
+	
+</style>
+</head>
+<body>
+	<h1 class="text-center">[[${vo.bno}]] : [[${vo.title}]]</h1>
+	<div class="col-md-6 text-center" style="margin: 10px auto;">
+		<div class="bigPictureWrapper">
+			<div class="bigPicture"></div>
+		</div>
+		<br>
+	
+		<table class="table table-striped">
+			<tr><td width="10%">제목</td><td th:text="${vo.title}">LoL</td></tr>
+			<tr><td>내용</td><td th:text="${vo.content}">LoL</td></tr>
+			<tr><td>저자</td><td th:text="${vo.writer}">LoL</td></tr>
+			<tr><td>등록</td><td th:text="${vo.regdate}">LoL</td></tr>
+			<tr><td>수정</td><td th:text="${vo.updatedate}">LoL</td></tr>
+		</table>
+		<div class="uploadResult">
+			<ul></ul>
+		</div>
+		
+		<form action="/board/remove" method="post">
+			<input type="hidden" name="bno" th:field="${vo.bno}">
+			<button class="btn btn-warning">삭제하기</button>
+			<input id="modify" class="btn btn-success" type="button" value="수정하기"></input>
+			<input id="toList" class="btn btn-info" type="button" value="리스트로"></input> 
+		</form>
+	</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script th:inline="javascript">
+	var toList = document.getElementById("toList");
+	var modi = document.getElementById("modify");
+	
+	toList.addEventListener("click", function(){
+		location.href = "/board/list";
+	});
+	
+	modi.addEventListener("click", function(){
+		location.href = "/board/modify?bno=" + [[${vo.bno}]];
+	});
+	
+	function showImage(filePath){
+		$(".bigPictureWrapper").css("display", "flex").show();
+		$(".bigPicture").html("<img src='/upload/display?fileName="
+								+ encodeURIComponent(filePath) + "'>")
+					    .animate({width: "100%", height: "100%"}, 1000);
+	}
+	
+	$(".bigPictureWrapper").on("click", function(){
+		$(".bigPictureWrapper").hide();
+	});
+	
+	$(document).ready(function(){
+		let bnoValue = [[${vo.getBno()}]];
+		console.log("bnoValue : " + bnoValue);
+		
+		//  /board/getAttachList?bno=bnoValue
+		$.getJSON("/board/getAttachList", {bno: bnoValue}, function(arr){
+			console.log(arr);
+			let str = "";
+			
+			$(arr).each(function(i, obj){
+				if(!obj.image){  // 이미지가 아니면
+					str += "<li>";
+					str += "<img src='/img/attach.png' width='16px'> " + obj.fileName;
+					str += "</li>";
+				}
+				else { // 이미지이면
+					let filePath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName); 
+					
+					str += "<li>";
+					str += "<a href=\"javascript:showImage(\'" + obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName + "\')\">";
+					str += "<img src='/upload/display?fileName=" + filePath + "' width='16px'></a> " + obj.fileName;
+					str += "</li>";
+				}
+			});
+			
+			$(".uploadResult ul").html(str);
+		});
+		
+	});
+	
+</script>
+</html>
