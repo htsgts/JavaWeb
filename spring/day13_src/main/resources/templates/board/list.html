@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>List</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+	<style>
+		@media (max-width: 918px){
+			.hide {
+				display: none;
+			}
+		}
+	</style>
+</head>
+<body>
+	<h1 class="text-center">게시글 리스트</h1>
+	<!-- <h1 th:text="${msg}"></h1> -->
+	<div class="text-center">
+		<input type="button" id="write" value="글쓰기">
+		<span class="btn btn-sm btn-success">글쓰기2</span>
+	</div>
+	<hr>
+	<div class="col-lg-8 text-center" style="margin: 0 auto;">
+		<form action="/board/list" method="get">
+			<div class="text-center">
+				<select name="type">
+					<option value="T">제목</option>
+					<option value="C">내용</option>
+					<option value="W">작성자</option>
+				</select>
+				<input type="text" name="keyword">
+				<input class="btn btn-sm btn-secondary" type="submit" value="검색">
+			</div>
+		</form> 
+		<table class="table" border="1">
+			<thead>
+				<td class="hide">번호</td>
+				<td>제목</td>
+				<td>작성자</td>
+				<td>작성일</td>
+				<td class="hide">수정일</td>
+			</thead>
+			<tbody>
+				<th:block th:each="brd:${board}">
+					<tr th:object="${brd}">
+						<td th:text="*{bno}" class="hide"></td>
+						<td><a th:text="*{title}" th:href="@{/board/read(bno=*{bno})}"></a></td>
+						<td th:text="*{writer}"></td>
+						<td th:text="*{regdate}"></td>
+						<td th:text="*{updatedate}" class="hide"></td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+		<!-- for debugging -->
+		<!-- 
+		<div th:text="${page}"></div>
+		-->
+		<!-- end of debugging -->
+		<div th:object="${page}">
+			<div style="text-align: center">
+				<a class="changePage" th:if="*{prev}" th:href="${page.startPage - 1}">&lt;</a>
+				<th:block th:each="num : ${#numbers.sequence(page.getStartPage(), page.getEndPage())}">
+				<code th:if="${page.criteria.getPageNum() == num}" th:text="${num}"></code>
+				<a class="changePage" th:unless="${page.criteria.getPageNum() == num}" th:href="${num}"><code th:text="${num}"></code></a>
+				</th:block>
+				<a class="changePage" th:if="*{next}" th:href="${page.endPage + 1}">&gt;</a>
+			</div>
+			<form name="pageForm" action="/board/list" th:object="${criteria}">
+				<input type="hidden" name="pageNum" th:field="*{pageNum}">
+				<input type="hidden" name="amount" th:field="*{amount}">
+				<input type="hidden" name="keyword" th:field="*{keyword}">
+				<input type="hidden" name="type" th:field="*{type}">
+			</form>
+		</div>
+	</div>
+	<br><br><br>
+</body>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script th:inline="javascript">
+	$("a.changePage").click(function(e){
+		e.preventDefault();
+		// 현재 페이지의 번호를 페이지 번호에 세팅
+		let pageForm = $(document.pageForm);
+		pageForm.find("input[name='pageNum']").val($(this).attr("href"));
+		// 제출한다.
+		pageForm.submit();
+	});
+
+	var btn1 = document.getElementById("write");
+	var btn2 = document.querySelector("span.btn");
+	
+	btn1.addEventListener("click", function(){
+		location.href = "/board/register";
+	});
+	
+	btn2.addEventListener("click", function(){
+		location.href = "/board/register";
+	});
+	
+	var msg = [[${msg}]];
+	if(msg){
+		alert(msg);
+	}
+</script>
+</html>

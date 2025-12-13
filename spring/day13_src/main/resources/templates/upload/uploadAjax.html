@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Upload</title>
+</head>
+<body>
+	<div class="uploadDiv">
+		<input type="file" name="uploadFile" multiple>
+	</div>
+	
+	<div class="uploadResult">
+		<ul></ul>
+	</div>
+	
+	<button id="uploadBtn">Upload</button>	
+</body>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script>
+	let checkRule = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
+	let maxSize = 5242880;  // 5MB
+	
+	let uploadResult = $(".uploadResult ul");
+	
+	function showUploadFile(arr){
+		let str = "";
+		$(arr).each(function(i, obj){
+			str += "<li>" + obj.fileName + "</li>";
+		});
+		uploadResult.append(str);
+	}
+	
+	// 파일 검사 함수 : true - 허용, false - 불허
+	function checkFile(fileName, fileSize){
+		if(checkRule.test(fileName)){
+			alert("그런 파일 올리시면 안됩니다.");
+			return false;
+		}
+		
+		if(fileSize >= maxSize){
+			alert("여기가 구글드라이브냐");
+			return false;
+		}
+		
+		return true;
+	}
+
+	$("#uploadBtn").on("click", function(e){
+		// alert("버튼 클릭 확인 완료");
+		
+		let formData = new FormData();
+		let inputFile = $("input[name='uploadFile']");
+		let files = inputFile[0].files;
+		
+		// formData에 files 추가하기
+		for(let i=0; i<files.length; i++){
+			if(!checkFile(files[i].name, files[i].size)){
+				return;
+			}
+			formData.append("uploadFile", files[i]);
+		}
+		
+		$.ajax({
+			url: "/upload/uploadAjaxPost",
+			processData: false,
+			contentType: false,
+			data: formData,
+			type: "POST",
+			success: function(result){
+				alert("파일 업로드 완료!!");
+				console.log(result);
+				showUploadFile(result);
+			}
+		});
+		
+		$.ajax({
+			url: "/upload/test?user=admi",
+			processData: false,
+			contentType: false,
+			data: formData,
+			type: "GET",
+			success: function(result){
+				alert("결과가 돌아왔습니다.");
+				console.log(result);
+			}
+		});
+	});
+</script>
+</html>
+
+
+
+
+
+
+
+
+
+
+
