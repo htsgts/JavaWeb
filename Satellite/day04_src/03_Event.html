@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Event</title>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<body>
+    <h1>Events</h1>
+    <hr>
+    <div id="eve">
+        <p>{{ message }}</p>
+        <button v-on:click="reverseMsg">Reverse</button><br>
+        <button @dblclick="buttonToggle('토글눌림')">Button Toggle</button><br>
+        <button v-if="button_yn">아무 죄도 없는 버튼</button>
+    </div>
+</body>
+<script>
+    var app5 = new Vue({
+        el: "#eve",
+        data: {
+            message: "아이돌, 기획사 간의 다툼",
+            button_yn: true,
+        },
+        methods: {
+            reverseMsg: function(){
+                alert("너 혹시 버튼 누름?");
+                this.message = "아이돌, 기획사와 화해";
+                this.message = this.message.split('').reverse().join('');
+            },
+            buttonToggle: function(sentence){
+                this.button_yn = !this.button_yn;
+                this.message = sentence;
+            }
+        }
+    });
+</script>
+</html>

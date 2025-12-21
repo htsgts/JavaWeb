@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>C to F</title>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<body>
+    <h1>Celsius vs. Fahrenheit</h1>
+    <hr>
+    <div id="calc">
+        <input type="number" :value="C" @change="setC"> 섭씨 = 
+        <input type="number" :value="F" @change="setF"> 화씨
+    </div>
+</body>
+<script>
+    var cal = new Vue({
+        el: '#calc',
+        data: {
+            C: 0,
+            F: 32,
+        },
+        methods: {
+            setC : function(e, c=e.target.value){
+                this.C = c;
+                this.F = c * (9 / 5) + 32;
+            },
+            setF : function(e, f=e.target.value){
+                this.F = f;
+                this.C = (f - 32) * (5 / 9);
+            }
+        }
+    });
+</script>
+</html>
