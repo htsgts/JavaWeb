@@ -1,0 +1,28 @@
+Day4
+
+1. Component
+    코드 재사용을 위해 각 단위를 독립적으로 구성하는 것
+    생성 방법
+        Vue.component('컴포넌트명', 내용)
+        Vue.component('todo-item', {
+            template: '<li>오늘의 할 일</li>'
+        });
+
+        <ul>
+            <todo-item></todo-item>
+        </ul>
+
+2. class 속성 변경하기
+    class 속성의 특징 : 여러 개의 클래스를 중복해서 적용 가능
+    v-bind:class={ 클래스명1: 값1, 클래스명2: 값2 }
+
+3. methods, computed, watch
+    methods : 실행할 때마다 실행이 됨
+    computed : 내부 구성원(변수)의 값이 변하지 않으면
+               실행하지 않고 caching된 값을 그대로 리턴
+    watch : 특정한 변수의 값이 변경되는지 모니터링(주시하고 있다)
+
+# 과제
+    웹 기획 툴 : figma 공부를 할 수 있는 
+                동영상 주소 또는 블로그 주소 또는 웹사이트 주소
+                1개를 찾아 카카오톡으로 제출하기    
