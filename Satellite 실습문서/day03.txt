@@ -1,0 +1,23 @@
+Day3
+
+1. Vue.js
+    - 3대 자바스크립트 라이브러리(패키지) 중 하나
+      (jQuery, React, Vue.js) + Angular
+
+    - 가장 중요한 사용 이유 : SPA
+      SPA : Single Page Application
+            페이지 접속 시에 모든 리소스를 로드시켜
+            페이지 이동이나 전환 발생 시에
+            페이지 전체를 리프레시하지 않고
+            변경이 필요한 부분만 바뀌는 구조
+
+    - Angular : TypeScript를 사용할 줄 알아야 함
+    - React : 기존 Javascript 문법을 많이 활용
+    - Vue.js : Vue 문법을 새롭게 익혀야 함
+               => 태그 위주여서 간단, 코드가 매우 짧음
+
+    - 보통 Vue는 React와 많이 비교됨
+      Vue : HTML 기반 템플릿, 학습하기가 상대적으로 쉬움, 아시아
+            > 알리바바, 라쿠텐
+      React : JSX(Javascript + XML) 기반, 학습 난이도 높음, 북미-유럽
+              > 넷플릭스, 인스타그램, 에어비앤비
